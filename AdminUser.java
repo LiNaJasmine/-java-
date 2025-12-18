@@ -1,7 +1,9 @@
-import java.util.Scanner;
+package d;
+
+// 移除控制台Scanner依赖
+// import java.util.Scanner;
 
 public class AdminUser extends User {
-    private Scanner scanner = new Scanner(System.in);
     private ParkingManager parkingManager;
 
     public AdminUser(String username, String password) {
@@ -11,21 +13,39 @@ public class AdminUser extends User {
 
     @Override
     public void enterSystem() {
-        System.out.println("===== 停车场后台管理子系统 =====");
-        while (true) {
-            System.out.println("1. 查看场内车辆");
-            System.out.println("2. 查看收支总览");
-            System.out.println("0. 退出");
-            System.out.print("请选择操作：");
-            int choice = scanner.nextInt();
-            switch (choice) {
-                case 1: parkingManager.viewCarsInPark(); break;
-                case 2: parkingManager.queryFinance(); break;
-                case 0:
-                    System.out.println("退出后台管理子系统！");
-                    return;
-                default: System.out.println("输入错误，请重新选择！");
+        // 不再使用控制台循环，直接启动Swing管理员界面
+        new AdminFrame(parkingManager).setVisible(true);
+    }
+
+    // 供Swing界面调用的管理员业务方法
+    public String getCarInParkInfo() {
+        // 拼接场内车辆信息，返回给Swing界面展示
+        StringBuilder sb = new StringBuilder();
+        for (Car car : parkingManager.getCarInPark()) {
+            String type = car.getUserType() == 0 ? "长期用户" : "次卡用户";
+            sb.append("车牌号：").append(car.getLicensePlate())
+              .append(" | 用户类型：").append(type).append("\n");
+        }
+        return sb.length() > 0 ? sb.toString() : "当前停车场无车辆！";
+    }
+
+    public String getFinanceStatInfo() {
+        // 拼接收支统计信息，返回给Swing界面展示
+        double totalIncome = 0, totalExpense = 0;
+        StringBuilder sb = new StringBuilder();
+        for (Finance f : parkingManager.getFinanceList()) {
+            sb.append("类型：").append(f.getType())
+              .append(" | 金额：").append(f.getAmount())
+              .append(" | 描述：").append(f.getDescription()).append("\n");
+            if ("收入".equals(f.getType())) {
+                totalIncome += f.getAmount();
+            } else {
+                totalExpense += f.getAmount();
             }
         }
+        sb.append("\n总收入：").append(totalIncome)
+          .append(" | 总支出：").append(totalExpense)
+          .append(" | 净利润：").append(totalIncome - totalExpense);
+        return sb.toString();
     }
 }

@@ -1,7 +1,9 @@
-import java.util.Scanner;
+package d;
+
+// 移除Scanner导入（无需控制台输入）
+// import java.util.Scanner;
 
 public class NormalUser extends User {
-    private Scanner scanner = new Scanner(System.in);
     private ParkingManager parkingManager; // 依赖停车场管理类
 
     public NormalUser(String username, String password) {
@@ -11,31 +13,22 @@ public class NormalUser extends User {
 
     @Override
     public void enterSystem() {
-        System.out.println("===== 停车场进出管理子系统 =====");
-        while (true) {
-            System.out.println("1. 长期用户入场");
-            System.out.println("2. 次卡用户入场");
-            System.out.println("3. 车辆出场");
-            System.out.println("4. 收入录入");
-            System.out.println("5. 支出录入");
-            System.out.println("6. 收支情况查询");
-            System.out.println("7. 收支情况删除");
-            System.out.println("0. 退出");
-            System.out.print("请选择操作：");
-            int choice = scanner.nextInt();
-            switch (choice) {
-                case 1: parkingManager.longTermUserIn(); break;
-                case 2: parkingManager.tempUserIn(); break;
-                case 3: parkingManager.carOut(); break;
-                case 4: parkingManager.addIncome(); break;
-                case 5: parkingManager.addExpense(); break;
-                case 6: parkingManager.queryFinance(); break;
-                case 7: parkingManager.deleteFinance(); break;
-                case 0:
-                    System.out.println("退出进出管理子系统！");
-                    return;
-                default: System.out.println("输入错误，请重新选择！");
-            }
-        }
+        // 不再使用控制台循环，改为启动Swing的普通用户界面
+        new UserFrame(parkingManager).setVisible(true);
+    }
+
+    // 新增：供Swing界面调用的业务方法（封装停车管理逻辑）
+    public String longTermUserIn(String licensePlate) {
+        parkingManager.longTermUserIn(licensePlate);
+        return "长期用户车辆" + licensePlate + "入场成功！";
+    }
+
+    public String tempUserIn(String licensePlate) {
+        parkingManager.tempUserIn(licensePlate);
+        return "次卡用户车辆" + licensePlate + "入场成功！";
+    }
+
+    public String carOut(String licensePlate) {
+        return parkingManager.carOut(licensePlate);
     }
 }

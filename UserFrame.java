@@ -70,6 +70,7 @@ package d;
 	        });
 
 	        // 车辆出场事件
+	     // UserFrame中btnCarOut的点击事件（无需修改，已自动展示计费结果）
 	        btnCarOut.addActionListener(new ActionListener() {
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
@@ -79,10 +80,12 @@ package d;
 	                    return;
 	                }
 	                String result = parkingManager.carOut(carNum);
+	                // 弹窗展示包含费用的出场结果
 	                JOptionPane.showMessageDialog(null, result);
 	                tfCarNum.setText("");
 	            }
 	        });
+	       
 
 	        // 收支管理事件（弹窗形式）
 	        btnFinance.addActionListener(new ActionListener() {
